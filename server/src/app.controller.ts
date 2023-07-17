@@ -15,6 +15,7 @@ export class AppController {
     metadata: Metadata,
     call: ServerUnaryCall<any, any>,
   ): SayResponse {
+    console.log('きました');
     return SayResponse.fromJson({
       sentence: `おっけー。うけとりましたよ。${data.sentence}`,
     });

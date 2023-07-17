@@ -1,95 +1,43 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import styles from "./page.module.css";
+import { FormEvent, useState } from "react";
+import { PartialMessage } from "@bufbuild/protobuf";
+import { SayRequest, SayResponse } from "../../gen/eliza_pb";
+import { createPromiseClient } from "@bufbuild/connect";
+import { createGrpcWebTransport } from "@bufbuild/connect-web";
+import { ElizaService } from "../../gen/eliza_connect";
+
+// gRPCクライアントの初期化
+const transport = createGrpcWebTransport({
+  baseUrl: "http://localhost:8000",
+});
+const client = createPromiseClient(ElizaService, transport);
 
 export default function Home() {
+  const [sentence, setSentence] = useState("");
+  const [text, setText] = useState("");
+
+  const handleSubmit = async (e: FormEvent) => {
+    console.log("greetingMessage");
+    e.preventDefault();
+    // リクエストメッセージのオブジェクトはPartialMessageを使うと取れます
+    const response: PartialMessage<SayRequest> = { sentence };
+    // gRPCメソッドを呼び出す
+    const greetingMessage: SayResponse = await client.say(response);
+    console.log("greetingMessage: ", greetingMessage);
+    setText(greetingMessage.sentence);
+  };
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="name"
+          value={sentence}
+          onChange={(e) => setSentence(e.target.value)}
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        <button type="submit">submit</button>
+      </form>
+      <div>{text}</div>
     </main>
-  )
+  );
 }
