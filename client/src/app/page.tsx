@@ -2,14 +2,16 @@
 import styles from "./page.module.css";
 import { FormEvent, useState } from "react";
 import { PartialMessage } from "@bufbuild/protobuf";
-import { SayRequest, SayResponse } from "../../gen/eliza_pb";
+
 import { createPromiseClient } from "@bufbuild/connect";
 import { createGrpcWebTransport } from "@bufbuild/connect-web";
-import { ElizaService } from "../../gen/eliza_connect";
+import { ElizaService } from "../../gen/eliza/v1/eliza_connect";
+import { SayRequest, SayResponse } from "../../gen/eliza/v1/eliza_pb";
+
 
 // gRPCクライアントの初期化
 const transport = createGrpcWebTransport({
-  baseUrl: "http://localhost:8000",
+  baseUrl: "http://localhost:8080",
 });
 const client = createPromiseClient(ElizaService, transport);
 

@@ -1,0 +1,25 @@
+version: v1
+plugins:
+#    server へのコード出力
+  - plugin: es
+    opt: target=ts
+    out: ../server/gen
+  - plugin: connect-es
+    opt: target=ts
+    out: ../server/gen
+#    client へのコード出力
+  - plugin: es
+    opt: target=ts
+    out: ../client/gen
+  - plugin: connect-es
+    opt:
+      - target=ts
+      - import_extension=none
+    out: ../client/gen
+#   go-server へのコード出力
+  - plugin: go
+    out: gen
+    opt: paths=source_relative
+  - plugin: connect-go
+    out: gen
+    opt: paths=source_relative
