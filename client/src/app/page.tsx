@@ -8,14 +8,17 @@ import { createGrpcWebTransport } from "@bufbuild/connect-web";
 import { ElizaService } from "../../gen/eliza/v1/eliza_connect";
 import { SayRequest, SayResponse } from "../../gen/eliza/v1/eliza_pb";
 
-
+const host = process.env.NEXT_PUBLIC_GRPC_HOST;
+const port = process.env.NEXT_PUBLIC_GRPC_PORT;
+const baseUrl = (host ?? "http://localhost") + ":" + (port ?? "9080");
 // gRPCクライアントの初期化
 const transport = createGrpcWebTransport({
-  baseUrl: "http://localhost:8080",
+  baseUrl
 });
 const client = createPromiseClient(ElizaService, transport);
 
 export default function Home() {
+  console.log(baseUrl);
   const [sentence, setSentence] = useState("");
   const [text, setText] = useState("");
 
