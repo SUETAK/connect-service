@@ -1,8 +1,8 @@
 import { createConnectTransport } from "@bufbuild/connect-web";
 import { createPromiseClient } from "@bufbuild/connect";
-import { ElizaService } from "../../gen/eliza_connect";
-import { SayResponse } from "../../gen/eliza_pb";
-import { headers } from "next/headers";
+import { ElizaService } from "../../gen/eliza/v1/eliza_connect";
+import { SayResponse } from "../../gen/eliza/v1/eliza_pb";
+
 
 export const elizaService = () => {
   const transport = createConnectTransport({
