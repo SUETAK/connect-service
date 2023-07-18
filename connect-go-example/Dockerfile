@@ -24,9 +24,9 @@ RUN apk --no-cache add ca-certificates
 COPY --from=builder /app/main /main
 
 # Expose port 8080 to the outside world
-EXPOSE 8080
+EXPOSE 8000
 
-ENV PORT 8080
+ENV PORT 8000
 
 # Run the binary program produced by ‘go install’
 CMD ["/main"]

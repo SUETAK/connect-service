@@ -29,7 +29,7 @@ func (s *ElizaServer) Say(
 }
 
 func main() {
-	address := "localhost:8080"
+	address := "localhost:8000"
 	eliza := &ElizaServer{}
 	mux := http.NewServeMux()
 	path, handler := elizav1connect.NewElizaServiceHandler(eliza)
