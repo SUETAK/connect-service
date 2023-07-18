@@ -26,5 +26,7 @@ COPY --from=builder /app/main /main
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
+ENV PORT 8080
+
 # Run the binary program produced by ‘go install’
 CMD ["/main"]
