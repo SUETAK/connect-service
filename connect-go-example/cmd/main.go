@@ -6,6 +6,8 @@ import (
 	"github.com/rs/cors"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/bufbuild/connect-go"
 	"golang.org/x/net/http2"
@@ -30,6 +32,17 @@ func (s *ElizaServer) Say(
 }
 
 func main() {
+
+	host := os.Getenv("HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	address := strings.Join([]string{host, port}, ":")
 	eliza := &ElizaServer{}
 	mux := http.NewServeMux()
 	path, handler := elizav1connect.NewElizaServiceHandler(eliza)
@@ -37,7 +50,7 @@ func main() {
 
 	corsHandler := cors.AllowAll().Handler(h2c.NewHandler(mux, &http2.Server{}))
 	http.ListenAndServe(
-		"localhost:8080",
+		address,
 		corsHandler,
 	)
 }
