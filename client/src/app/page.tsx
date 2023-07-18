@@ -26,7 +26,7 @@ export default function Home() {
     // リクエストメッセージのオブジェクトはPartialMessageを使うと取れます
     const response: PartialMessage<SayRequest> = { sentence };
     // gRPCメソッドを呼び出す
-    const greetingMessage: SayResponse = await client.say(response);
+    const greetingMessage: SayResponse = await client.say(response, {headers: { "Access-Control-Allow-Origin": baseUrl }});
     console.log("greetingMessage: ", greetingMessage);
     setText(greetingMessage.sentence);
   };
