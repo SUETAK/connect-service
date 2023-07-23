@@ -69,4 +69,4 @@
 # typescript
 /client/*.tsbuildinfo
 /client/next-env.d.ts
-!/connect-go-example/.env
+/connect-go-example/.env
