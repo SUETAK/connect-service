@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"example/openai"
+	"example/service/openai"
 	"fmt"
 	"github.com/bufbuild/connect-go"
 	"github.com/joho/godotenv"
@@ -37,9 +37,18 @@ func (s *ElizaServer) Say(
 		return nil, err
 	}
 	log.Println(openaiRes)
+	var messages []openai.ChatMessage
+	for _, choice := range openaiRes.Choices {
+		messages = append(messages, choice.Message)
+	}
+
+	var joinedMessages string
+	for _, message := range messages {
+		joinedMessages += message.Content
+	}
 
 	res := connect.NewResponse(&elizav1.SayResponse{
-		Sentence: fmt.Sprintf("Hello, %s! Here is a completion: %s", req.Msg.Sentence, openaiRes),
+		Sentence: fmt.Sprintf("Hello, %s! Here is a completion: %s", req.Msg.Sentence, joinedMessages),
 	})
 	res.Header().Set("Greet-Version", "v1")
 	return res, nil
