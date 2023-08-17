@@ -35,11 +35,14 @@ const (
 const (
 	// ElizaServiceSayProcedure is the fully-qualified name of the ElizaService's Say RPC.
 	ElizaServiceSayProcedure = "/eliza.v1.ElizaService/Say"
+	// ElizaServiceHelloProcedure is the fully-qualified name of the ElizaService's Hello RPC.
+	ElizaServiceHelloProcedure = "/eliza.v1.ElizaService/Hello"
 )
 
 // ElizaServiceClient is a client for the eliza.v1.ElizaService service.
 type ElizaServiceClient interface {
 	Say(context.Context, *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error)
+	Hello(context.Context, *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error)
 }
 
 // NewElizaServiceClient constructs a client for the eliza.v1.ElizaService service. By default, it
@@ -57,12 +60,18 @@ func NewElizaServiceClient(httpClient connect_go.HTTPClient, baseURL string, opt
 			baseURL+ElizaServiceSayProcedure,
 			opts...,
 		),
+		hello: connect_go.NewClient[v1.HelloRequest, v1.HelloResponse](
+			httpClient,
+			baseURL+ElizaServiceHelloProcedure,
+			opts...,
+		),
 	}
 }
 
 // elizaServiceClient implements ElizaServiceClient.
 type elizaServiceClient struct {
-	say *connect_go.Client[v1.SayRequest, v1.SayResponse]
+	say   *connect_go.Client[v1.SayRequest, v1.SayResponse]
+	hello *connect_go.Client[v1.HelloRequest, v1.HelloResponse]
 }
 
 // Say calls eliza.v1.ElizaService.Say.
@@ -70,9 +79,15 @@ func (c *elizaServiceClient) Say(ctx context.Context, req *connect_go.Request[v1
 	return c.say.CallUnary(ctx, req)
 }
 
+// Hello calls eliza.v1.ElizaService.Hello.
+func (c *elizaServiceClient) Hello(ctx context.Context, req *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error) {
+	return c.hello.CallUnary(ctx, req)
+}
+
 // ElizaServiceHandler is an implementation of the eliza.v1.ElizaService service.
 type ElizaServiceHandler interface {
 	Say(context.Context, *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error)
+	Hello(context.Context, *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error)
 }
 
 // NewElizaServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -86,10 +101,17 @@ func NewElizaServiceHandler(svc ElizaServiceHandler, opts ...connect_go.HandlerO
 		svc.Say,
 		opts...,
 	)
+	elizaServiceHelloHandler := connect_go.NewUnaryHandler(
+		ElizaServiceHelloProcedure,
+		svc.Hello,
+		opts...,
+	)
 	return "/eliza.v1.ElizaService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ElizaServiceSayProcedure:
 			elizaServiceSayHandler.ServeHTTP(w, r)
+		case ElizaServiceHelloProcedure:
+			elizaServiceHelloHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -101,4 +123,8 @@ type UnimplementedElizaServiceHandler struct{}
 
 func (UnimplementedElizaServiceHandler) Say(context.Context, *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("eliza.v1.ElizaService.Say is not implemented"))
+}
+
+func (UnimplementedElizaServiceHandler) Hello(context.Context, *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("eliza.v1.ElizaService.Hello is not implemented"))
 }

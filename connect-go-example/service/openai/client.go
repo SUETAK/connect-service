@@ -22,10 +22,14 @@ type Client struct {
 	Key string
 }
 
-func NewClient(key string) *Client {
+func NewClient(key string) AIClient {
 	return &Client{
 		Key: key,
 	}
+}
+
+type AIClient interface {
+	GetCompletion(prompt string, maxTokens int) (GptResponse, error)
 }
 
 func (c *Client) GetCompletion(prompt string, maxTokens int) (GptResponse, error) {

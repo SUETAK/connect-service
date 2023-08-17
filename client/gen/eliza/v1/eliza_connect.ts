@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { SayRequest, SayResponse } from "./eliza_pb";
+import { HelloRequest, HelloResponse, SayRequest, SayResponse } from "./eliza_pb";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,15 @@ export const ElizaService = {
       name: "Say",
       I: SayRequest,
       O: SayResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc eliza.v1.ElizaService.Hello
+     */
+    hello: {
+      name: "Hello",
+      I: HelloRequest,
+      O: HelloResponse,
       kind: MethodKind.Unary,
     },
   }

@@ -12,6 +12,15 @@ message SayResponse {
   string sentence = 1;
 }
 
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  int64 age = 1;
+}
+
 service ElizaService {
   rpc Say(SayRequest) returns (SayResponse) {}
+  rpc Hello(HelloRequest) returns (HelloResponse) {}
 }
