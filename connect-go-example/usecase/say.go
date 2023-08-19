@@ -9,16 +9,6 @@ import (
 	"log"
 )
 
-type ElizaServer struct {
-	openaiClient openai.AIClient
-}
-
-func NewElizaServer(openaiKey string) *ElizaServer {
-	return &ElizaServer{
-		openaiClient: openai.NewClient(openaiKey),
-	}
-}
-
 // TODO say関数を別のpackage に移動させる
 func (s *ElizaServer) Say(
 	ctx context.Context,

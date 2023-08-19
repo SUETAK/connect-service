@@ -23,6 +23,7 @@ func main() {
 	if openaiKey == "" {
 		log.Fatal("OPENAI_KEY environment variable must be set")
 	}
+
 	eliza := usecase.NewElizaServer(openaiKey)
 
 	mux := http.NewServeMux()
@@ -30,8 +31,11 @@ func main() {
 	mux.Handle(path, handler)
 
 	corsHandler := cors.AllowAll().Handler(h2c.NewHandler(mux, &http2.Server{}))
-	http.ListenAndServe(
+	err = http.ListenAndServe(
 		address,
 		corsHandler,
 	)
+	if err != nil {
+		panic(err)
+	}
 }
