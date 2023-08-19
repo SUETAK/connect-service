@@ -6,6 +6,7 @@ import { createPromiseClient } from "@bufbuild/connect";
 import { createGrpcWebTransport } from "@bufbuild/connect-web";
 import { ElizaService } from "../../gen/eliza/v1/eliza_connect";
 import { HelloRequest, HelloResponse, SayRequest, SayResponse } from "../../gen/eliza/v1/eliza_pb";
+import useSWR from "swr";
 
 const baseUrl = process.env.NEXT_PUBLIC_GRPC_HOST ?? "http://localhost:8080";
 // gRPCクライアントの初期化
@@ -20,6 +21,9 @@ function requestServer(): Promise<SayResponse> {
   return client.say(request, { headers });
 }
 
+async function fetcher() {
+  return client.say({ sentence: 'this is a Bob ?' }, { headers });
+}
 let tmp: any
 
 const Post = () => {
@@ -32,10 +36,13 @@ const Post = () => {
   if (tmp == null) {
     throw requestServer().then((res) => {
       tmp = res
-      console.log(tmp);
+      // console.log(tmp);
     })
   }
 
+  const {data, error, isLoading} = useSWR([ElizaService.methods.say.name], fetcher)
+
+  console.log('swr:', data);
 
   const handleSubmit = async (e: FormEvent) => {
     console.log("greetingMessage");
@@ -45,9 +52,6 @@ const Post = () => {
     // gRPCメソッドを呼び出す
     const greetingMessage: SayResponse = await client.say(request, { headers });
     console.log("greetingMessage: ", greetingMessage);
-    setTimeout(() => {
-      console.log('sleep')
-    }, 5000);
     setText(greetingMessage.sentence);
   };
 
