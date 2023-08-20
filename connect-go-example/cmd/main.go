@@ -1,9 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"example/usecase"
+	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
+	"golang.org/x/net/context"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"log"
@@ -23,6 +29,17 @@ func main() {
 	if openaiKey == "" {
 		log.Fatal("OPENAI_KEY environment variable must be set")
 	}
+
+	dsn := "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+
+	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+	db := bun.NewDB(sqldb, pgdialect.New())
+
+	var v string
+	if err := db.NewSelect().ColumnExpr("version()").Scan(context.Background(), &v); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(v)
 
 	eliza := usecase.NewElizaServer(openaiKey)
 
