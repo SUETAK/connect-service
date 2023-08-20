@@ -1,10 +1,11 @@
 package usecase
 
 import (
+	"connectrpc.com/connect"
 	elizav1 "example/gen/eliza/v1"
 	"example/service/openai"
 	"fmt"
-	"github.com/bufbuild/connect-go"
+
 	"golang.org/x/net/context"
 	"log"
 )

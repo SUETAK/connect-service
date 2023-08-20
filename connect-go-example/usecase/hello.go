@@ -1,8 +1,8 @@
 package usecase
 
 import (
+	"connectrpc.com/connect"
 	elizav1 "example/gen/eliza/v1"
-	"github.com/bufbuild/connect-go"
 	"golang.org/x/net/context"
 )
 

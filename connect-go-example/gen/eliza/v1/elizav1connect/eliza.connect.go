@@ -5,10 +5,10 @@
 package elizav1connect
 
 import (
+	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
 	v1 "example/gen/eliza/v1"
-	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
 )
@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect_go.IsAtLeastVersion0_1_0
+const _ = connect.IsAtLeastVersion0_1_0
 
 const (
 	// ElizaServiceName is the fully-qualified name of the ElizaService service.
@@ -41,8 +41,8 @@ const (
 
 // ElizaServiceClient is a client for the eliza.v1.ElizaService service.
 type ElizaServiceClient interface {
-	Say(context.Context, *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error)
-	Hello(context.Context, *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error)
+	Say(context.Context, *connect.Request[v1.SayRequest]) (*connect.Response[v1.SayResponse], error)
+	Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error)
 }
 
 // NewElizaServiceClient constructs a client for the eliza.v1.ElizaService service. By default, it
@@ -52,15 +52,15 @@ type ElizaServiceClient interface {
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewElizaServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts ...connect_go.ClientOption) ElizaServiceClient {
+func NewElizaServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ElizaServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &elizaServiceClient{
-		say: connect_go.NewClient[v1.SayRequest, v1.SayResponse](
+		say: connect.NewClient[v1.SayRequest, v1.SayResponse](
 			httpClient,
 			baseURL+ElizaServiceSayProcedure,
 			opts...,
 		),
-		hello: connect_go.NewClient[v1.HelloRequest, v1.HelloResponse](
+		hello: connect.NewClient[v1.HelloRequest, v1.HelloResponse](
 			httpClient,
 			baseURL+ElizaServiceHelloProcedure,
 			opts...,
@@ -70,24 +70,24 @@ func NewElizaServiceClient(httpClient connect_go.HTTPClient, baseURL string, opt
 
 // elizaServiceClient implements ElizaServiceClient.
 type elizaServiceClient struct {
-	say   *connect_go.Client[v1.SayRequest, v1.SayResponse]
-	hello *connect_go.Client[v1.HelloRequest, v1.HelloResponse]
+	say   *connect.Client[v1.SayRequest, v1.SayResponse]
+	hello *connect.Client[v1.HelloRequest, v1.HelloResponse]
 }
 
 // Say calls eliza.v1.ElizaService.Say.
-func (c *elizaServiceClient) Say(ctx context.Context, req *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error) {
+func (c *elizaServiceClient) Say(ctx context.Context, req *connect.Request[v1.SayRequest]) (*connect.Response[v1.SayResponse], error) {
 	return c.say.CallUnary(ctx, req)
 }
 
 // Hello calls eliza.v1.ElizaService.Hello.
-func (c *elizaServiceClient) Hello(ctx context.Context, req *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error) {
+func (c *elizaServiceClient) Hello(ctx context.Context, req *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
 	return c.hello.CallUnary(ctx, req)
 }
 
 // ElizaServiceHandler is an implementation of the eliza.v1.ElizaService service.
 type ElizaServiceHandler interface {
-	Say(context.Context, *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error)
-	Hello(context.Context, *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error)
+	Say(context.Context, *connect.Request[v1.SayRequest]) (*connect.Response[v1.SayResponse], error)
+	Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error)
 }
 
 // NewElizaServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -95,13 +95,13 @@ type ElizaServiceHandler interface {
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewElizaServiceHandler(svc ElizaServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	elizaServiceSayHandler := connect_go.NewUnaryHandler(
+func NewElizaServiceHandler(svc ElizaServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	elizaServiceSayHandler := connect.NewUnaryHandler(
 		ElizaServiceSayProcedure,
 		svc.Say,
 		opts...,
 	)
-	elizaServiceHelloHandler := connect_go.NewUnaryHandler(
+	elizaServiceHelloHandler := connect.NewUnaryHandler(
 		ElizaServiceHelloProcedure,
 		svc.Hello,
 		opts...,
@@ -121,10 +121,10 @@ func NewElizaServiceHandler(svc ElizaServiceHandler, opts ...connect_go.HandlerO
 // UnimplementedElizaServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedElizaServiceHandler struct{}
 
-func (UnimplementedElizaServiceHandler) Say(context.Context, *connect_go.Request[v1.SayRequest]) (*connect_go.Response[v1.SayResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("eliza.v1.ElizaService.Say is not implemented"))
+func (UnimplementedElizaServiceHandler) Say(context.Context, *connect.Request[v1.SayRequest]) (*connect.Response[v1.SayResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("eliza.v1.ElizaService.Say is not implemented"))
 }
 
-func (UnimplementedElizaServiceHandler) Hello(context.Context, *connect_go.Request[v1.HelloRequest]) (*connect_go.Response[v1.HelloResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("eliza.v1.ElizaService.Hello is not implemented"))
+func (UnimplementedElizaServiceHandler) Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("eliza.v1.ElizaService.Hello is not implemented"))
 }
