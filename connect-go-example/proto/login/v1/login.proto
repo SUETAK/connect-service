@@ -2,7 +2,7 @@ syntax= "proto3";
 
 package login.v1;
 
-option go_package = "example/gen/login/v1;loginv1";
+option go_package = "example/interfaces/proto/login/v1;loginv1";
 
 message LoginRequest {
     string username = 1;
