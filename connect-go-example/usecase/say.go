@@ -2,7 +2,8 @@ package usecase
 
 import (
 	"connectrpc.com/connect"
-	elizav1 "example/gen/eliza/v1"
+	elizav1 "example/interfaces/proto/eliza/v1"
+
 	"example/service/openai"
 	"fmt"
 

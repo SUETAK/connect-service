@@ -3,7 +3,8 @@ package main
 import (
 	"connectrpc.com/connect"
 	"database/sql"
-	"example/gen/eliza/v1/elizav1connect"
+	"example/interfaces/proto/eliza/v1/elizav1connect"
+
 	"example/interfaces/interceptor"
 	"example/usecase"
 	"fmt"

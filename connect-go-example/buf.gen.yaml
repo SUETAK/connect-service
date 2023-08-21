@@ -3,14 +3,14 @@ plugins:
 #    server へのコード出力
   - plugin: es
     opt: target=ts
-    out: ../server/gen
+    out: ../server
   - plugin: connect-es
     opt: target=ts
-    out: ../server/gen
+    out: ../server
 #    client へのコード出力
   - plugin: es
     opt: target=ts
-    out: ../client/gen
+    out: ../client
   - plugin: connect-es
     opt:
       - target=ts
@@ -18,8 +18,8 @@ plugins:
     out: ../client/gen
 #   go-server へのコード出力
   - plugin: go
-    out: gen
+    out: interfaces
     opt: paths=source_relative
   - plugin: connect-go
-    out: gen
+    out: interfaces
     opt: paths=source_relative
