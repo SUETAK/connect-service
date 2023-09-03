@@ -3,10 +3,8 @@ package main
 import (
 	"connectrpc.com/connect"
 	"database/sql"
-	"example/interfaces/proto/eliza/v1/elizav1connect"
-
+	"example/interfaces/di"
 	"example/interfaces/interceptor"
-	"example/usecase"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -48,11 +46,10 @@ func main() {
 	keyPath = "./private.pem"
 	authInterceptor := connect.WithInterceptors(interceptor.NewAuthInterceptor(issuer, keyPath))
 
-	eliza := usecase.NewElizaServer(openaiKey)
-
 	mux := http.NewServeMux()
-	path, handler := elizav1connect.NewElizaServiceHandler(eliza, authInterceptor)
-	mux.Handle(path, handler)
+
+	di.InitEliza(mux, openaiKey, db, authInterceptor)
+	di.InitSign(mux, db, authInterceptor)
 
 	corsHandler := cors.AllowAll().Handler(h2c.NewHandler(mux, &http2.Server{}))
 	err = http.ListenAndServe(

@@ -2,14 +2,14 @@ package migrations
 
 import (
 	"context"
-	"example/repository"
+	"example/repository/model"
 	"github.com/uptrace/bun"
 )
 
 func init() {
 	Migrations.MustRegister(func(ctx context.Context, db *bun.DB) error {
 		_, err := db.NewCreateTable().
-			Model((*repository.User)(nil)).
+			Model((*model.User)(nil)).
 			Exec(ctx)
 		if err != nil {
 			return err
@@ -17,7 +17,7 @@ func init() {
 		return nil
 	}, func(ctx context.Context, db *bun.DB) error {
 		_, err := db.NewDropTable().
-			Model((*repository.User)(nil)).
+			Model((*model.User)(nil)).
 			IfExists().
 			Exec(ctx)
 		if err != nil {

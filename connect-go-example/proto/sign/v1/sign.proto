@@ -1,0 +1,28 @@
+syntax= "proto3";
+
+package sign.v1;
+
+option go_package = "example/interfaces/proto/sign/v1;signv1";
+
+message SignInRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message SignInResponse {
+    string token = 1;
+}
+
+message SignUpRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message SignUpResponse {
+    string token = 1;
+}
+
+service SignService {
+    rpc SignIn(SignInRequest) returns (SignInResponse) {}
+    rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
+}
