@@ -4,7 +4,6 @@ import (
 	"connectrpc.com/connect"
 	"database/sql"
 	"example/interfaces/di"
-	"example/interfaces/interceptor"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -41,15 +40,17 @@ func main() {
 	}
 	fmt.Println(v)
 
-	var issuer, keyPath string
-	issuer = "eliza"
-	keyPath = "./private.pem"
-	authInterceptor := connect.WithInterceptors(interceptor.NewAuthInterceptor(issuer, keyPath))
+	// TODO 認証処理の実装を行う
+	//var issuer, keyPath string
+	//issuer = "eliza"
+	//keyPath = "./private.pem"
+	//authInterceptor := connect.WithInterceptors(interceptor.NewAuthInterceptor(issuer, keyPath))
+	authInterceptor := connect.WithInterceptors()
 
 	mux := http.NewServeMux()
 
 	di.InitEliza(mux, openaiKey, db, authInterceptor)
-	di.InitSign(mux, db, authInterceptor)
+	//di.InitSign(mux, db, authInterceptor)
 
 	corsHandler := cors.AllowAll().Handler(h2c.NewHandler(mux, &http2.Server{}))
 	err = http.ListenAndServe(
